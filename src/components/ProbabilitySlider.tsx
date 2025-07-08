@@ -1,5 +1,6 @@
 "use client";
 
+import { getColorFromProbability } from "@/lib/get-color-from-prob";
 import * as Slider from "@radix-ui/react-slider";
 
 interface ProbabilitySliderProps {
@@ -8,14 +9,9 @@ interface ProbabilitySliderProps {
 }
 
 export default function ProbabilitySlider({ sliderValue: value, setSliderValue: setValue }: ProbabilitySliderProps) {
-  const harrisPercent = value[0];
-  const trumpPercent = 100 - harrisPercent;
-
-  const getThumbColor = () => {
-    const red = Math.round(trumpPercent * 2.55);
-    const blue = Math.round(harrisPercent * 2.55);
-    return `rgb(${red}, 0, ${blue})`;
-  };
+  const trumpPercent = value[0];
+  const harrisPercent = 100 - trumpPercent;
+  const prob = { R: trumpPercent / 100, D: harrisPercent / 100 };
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
@@ -23,7 +19,7 @@ export default function ProbabilitySlider({ sliderValue: value, setSliderValue: 
         {/* Gradient Track Background */}
         <div
           className="absolute w-full rounded-full pointer-events-none inset-y-1"
-          style={{ background: "linear-gradient(to right, red, blue)" }}
+          style={{ background: "linear-gradient(to right, blue, red)" }}
         />
         <Slider.Root
           className="relative flex items-center w-full h-8 select-none touch-none"
@@ -38,14 +34,14 @@ export default function ProbabilitySlider({ sliderValue: value, setSliderValue: 
           </Slider.Track>
           <Slider.Thumb
             className="block w-5 h-5 transition-colors border border-white rounded-full shadow cursor-pointer"
-            style={{ backgroundColor: getThumbColor() }}
+            style={{ backgroundColor: getColorFromProbability(prob) }}
             aria-label="Probability"
           />
         </Slider.Root>
       </div>
       <div className="flex justify-between w-full text-sm">
-        <span className="text-red-600">Trump: {trumpPercent}%</span>
         <span className="text-blue-600">Harris: {harrisPercent}%</span>
+        <span className="text-red-600">Trump: {trumpPercent}%</span>
       </div>
     </div>
   );

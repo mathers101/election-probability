@@ -1,0 +1,62 @@
+import type { State } from "./static-state-data";
+
+export type StateProbability = {
+  R: number;
+  D: number;
+};
+
+export type StateProbabilities = Record<State, StateProbability | null>;
+
+export const initialStateProbabilities: StateProbabilities = {
+  AL: { R: 1, D: 0 },
+  AK: { R: 1, D: 0 },
+  AZ: null,
+  AR: { R: 1, D: 0 },
+  CA: { R: 0, D: 1 },
+  CO: { R: 0, D: 1 },
+  CT: { R: 0, D: 1 },
+  DC: { R: 0, D: 1 },
+  DE: { R: 0, D: 1 },
+  FL: { R: 1, D: 0 },
+  GA: null,
+  HI: { R: 0, D: 1 },
+  ID: { R: 1, D: 0 },
+  IL: { R: 0, D: 1 },
+  IN: { R: 1, D: 0 },
+  IA: { R: 1, D: 0 },
+  KS: { R: 1, D: 0 },
+  KY: { R: 1, D: 0 },
+  LA: { R: 1, D: 0 },
+  ME: { R: 0, D: 1 },
+  MD: { R: 0, D: 1 },
+  MA: { R: 0, D: 1 },
+  MI: null,
+  MN: { R: 0, D: 1 },
+  MS: { R: 1, D: 0 },
+  MO: { R: 1, D: 0 },
+  MT: { R: 1, D: 0 },
+  NE: { R: 1, D: 0 },
+  NV: null,
+  NH: { R: 0, D: 1 },
+  NJ: { R: 0, D: 1 },
+  NM: { R: 0, D: 1 },
+  NY: { R: 0, D: 1 },
+  NC: null,
+  ND: { R: 1, D: 0 },
+  OH: { R: 1, D: 0 },
+  OK: { R: 1, D: 0 },
+  OR: { R: 0, D: 1 },
+  PA: null,
+  RI: { R: 0, D: 1 },
+  SC: { R: 1, D: 0 },
+  SD: { R: 1, D: 0 },
+  TN: { R: 1, D: 0 },
+  TX: { R: 1, D: 0 },
+  UT: { R: 1, D: 0 },
+  VT: { R: 0, D: 1 },
+  VA: { R: 0, D: 1 },
+  WA: { R: 0, D: 1 },
+  WV: { R: 1, D: 0 },
+  WI: null,
+  WY: { R: 1, D: 0 },
+};

@@ -3,7 +3,7 @@ import Predictor from "./components/Predictor";
 
 function App() {
   return (
-    <div className="flex flex-col min-h-[90vh] items-center justify-center">
+    <div className="bg-gray-100 py-6 flex flex-col min-h-screen items-center justify-center gap-9">
       <Predictor />
     </div>
   );

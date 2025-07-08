@@ -1,27 +1,25 @@
 import { useMemo, useState } from "react";
-import { initialStateProbabilities, type StateProbabilities, type StateProbability } from "../data/state-data";
+import { initialStateProbabilities, type StateProbabilities, type StateProbability } from "../data/state-probabilities";
 import USAMap, { type CustomizeConfig } from "./USAMap";
-import { type State } from "../data/map-dimensions";
+import { type State } from "../data/static-state-data";
+import { getColorFromProbability } from "@/lib/get-color-from-prob";
+import { calculateProbability } from "@/lib/calculate-probability";
+import VictoryProbabilities from "./FinalProbabilities";
+import VictoryProbabilitiesPlaceholder from "./FinalProbabilitiesPlaceholder";
 
 const fillFromProbability = (prob: StateProbability | null): string => {
   if (!prob) {
     return "gray";
-  } else if (prob.R >= 0.7) {
-    return "red";
-  } else if (prob.D >= 0.3) {
-    return "blue";
   } else {
-    return "yellow";
+    return getColorFromProbability(prob);
   }
 };
 
 export default function Predictor() {
   const [stateProbabilities, setStateProbabilities] = useState<StateProbabilities>(initialStateProbabilities);
   const states = Object.keys(stateProbabilities) as State[];
-  // const mapHandler = (state: State) => {
-  //   // alert(state);
-  //   return;
-  // };
+
+  const probability = calculateProbability(stateProbabilities);
 
   const statesFilling = (): Record<string, CustomizeConfig> => {
     const result: Record<string, CustomizeConfig> = {};
@@ -36,7 +34,7 @@ export default function Predictor() {
 
   const customizeStates = useMemo(statesFilling, [stateProbabilities, states]);
 
-  const setStateProbability = (state: State, prob: StateProbability) => {
+  const setStateProbability = (state: State, prob: StateProbability | null) => {
     setStateProbabilities((prev) => ({
       ...prev,
       [state]: prob,
@@ -45,6 +43,7 @@ export default function Predictor() {
 
   return (
     <>
+      {probability ? <VictoryProbabilities prob={probability} /> : <VictoryProbabilitiesPlaceholder />}
       <USAMap
         customize={customizeStates}
         onClick={() => {}}

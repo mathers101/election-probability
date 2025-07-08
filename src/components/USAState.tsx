@@ -1,4 +1,3 @@
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { cn } from "../lib/utils";
 import { useState } from "react";
 import ProbabilitySlider from "./ProbabilitySlider";
@@ -12,16 +11,22 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { stateData } from "@/data/static-state-data";
+import { type StateProbability } from "@/data/state-probabilities";
 
-interface USAStateProps {
+interface BasicUSAStateProps {
   stateName: string;
   dimensions: string;
   state: string;
   fill: string;
   onSelectState: () => void;
+}
+
+interface USAStateProps extends BasicUSAStateProps {
+  onSelectState: () => void;
   onUnselectState: () => void;
-  probability: { R: number; D: number } | null;
-  setProbability: (prob: { R: number; D: number }) => void;
+  probability: StateProbability | null;
+  setProbability: (prob: StateProbability | null) => void;
 }
 
 const USAState = ({
@@ -35,23 +40,30 @@ const USAState = ({
   setProbability,
 }: USAStateProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [sliderValue, setSliderValue] = useState([(probability?.D ?? 0.5) * 100]);
+  // slider value is the probability of a Trump win
+  const initialSliderValue = (probability?.R ?? 0.5) * 100;
+  const [sliderValue, setSliderValue] = useState([initialSliderValue]);
+
+  const numElectoralVotes = stateData[state]?.electoralVotes ?? 0;
 
   const onOpenChange = (open: boolean) => {
     onSelectState();
     setDialogOpen(open);
     if (!open) {
       onUnselectState();
+      setSliderValue([initialSliderValue]);
     }
   };
 
   const onClickCancel = () => {
     setDialogOpen(false);
+    setSliderValue([initialSliderValue]);
     onUnselectState();
   };
 
   const onSave = () => {
-    setProbability({ R: (100 - sliderValue[0]) / 100, D: sliderValue[0] / 100 });
+    // slider value is the probability of a Trump win
+    setProbability({ R: sliderValue[0] / 100, D: (100 - sliderValue[0]) / 100 });
     setDialogOpen(false);
     onUnselectState();
   };
@@ -64,17 +76,15 @@ const USAState = ({
           fill={fill}
           data-name={state}
           className={cn("hover:cursor-pointer", "hover:opacity-75")}
-          onClick={onSelectState}
+          // onClick={onSelectState}
         >
           <title>{stateName}</title>
         </path>
       </DialogTrigger>
       <DialogContent className="w-md">
-        <DialogHeader>
-          <DialogTitle className="mx-auto mb-2">{stateName}</DialogTitle>
-          <VisuallyHidden>
-            <DialogDescription>hi</DialogDescription>
-          </VisuallyHidden>
+        <DialogHeader className="flex flex-col items-center">
+          <DialogTitle>{stateName}</DialogTitle>
+          <DialogDescription>{numElectoralVotes} electoral votes</DialogDescription>
         </DialogHeader>
         <ProbabilitySlider sliderValue={sliderValue} setSliderValue={setSliderValue} />
         <DialogFooter>

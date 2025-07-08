@@ -1,14 +1,14 @@
 import { useRef, useState } from "react";
 import USAState from "./USAState";
-import { stateDimensions, type State } from "../data/map-dimensions";
-import type { StateProbabilities, StateProbability } from "@/data/state-data";
+import { stateData, type State } from "../data/static-state-data";
+import type { StateProbabilities, StateProbability } from "@/data/state-probabilities";
 
 export type CustomizeConfig = {
   fill?: string;
   clickHandler?: () => void;
 };
 
-const dataStates = stateDimensions;
+const dataStates = stateData;
 
 interface USAMapProps {
   onClick: (stateAbbreviation: State) => void;
@@ -18,7 +18,7 @@ interface USAMapProps {
   defaultFill?: string;
   customize?: Partial<Record<State, CustomizeConfig>>;
   stateProbabilities: StateProbabilities;
-  setStateProbability: (state: State, prob: { R: number; D: number }) => void;
+  setStateProbability: (state: State, prob: StateProbability | null) => void;
 }
 
 const USAMap = ({
@@ -60,19 +60,12 @@ const USAMap = ({
     }
   }
 
-  const setProbabilityByState = (state: State) => (prob: StateProbability) => {
+  const setProbabilityByState = (state: State) => (prob: StateProbability | null) => {
     setStateProbability(state, prob);
   };
 
   return (
-    <svg
-      className=""
-      xmlns="http://www.w3.org/2000/svg"
-      width={width}
-      height={height}
-      viewBox="0 0 959 593"
-      onClick={resetZoom}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 959 593" onClick={resetZoom}>
       <title>{title}</title>
       <g
         className="transition-transform duration-500 ease-in-out outlines"
