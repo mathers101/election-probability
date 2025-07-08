@@ -63,9 +63,9 @@ export const calculateProbability = (stateProbabilities: StateProbabilities): Fi
       const prob = stateProbabilities[state as State]!;
       arrangementProbability *= arrangement[state] === "D" ? prob.D : prob.R;
     }
-    if (harrisVotes > 270) {
+    if (harrisVotes >= 270) {
       harrisProbability += arrangementProbability;
-    } else if (trumpVotes > 270) {
+    } else if (trumpVotes >= 270) {
       trumpProbability += arrangementProbability;
     } else {
       drawProbability += arrangementProbability;
