@@ -5,7 +5,7 @@ export default function VictoryProbabilitiesPlaceholder() {
     <div className="w-full max-w-2xl mx-auto mt-4 px-4">
       <Card>
         <CardContent className="flex flex-col items-center justify-center p-2 text-center">
-          <p className="text-xl font-semibold text-muted-foreground">Election Probabilities</p>
+          <p className="text-xl font-semibold text-muted-foreground">2024 Election Probabilities</p>
           <p className="mt-2 text-sm text-muted-foreground max-w-lg">
             Once you fill in your predictions for the swing states, this section will show the probability of a Harris
             victory, Trump victory, or a draw based on your inputs.
