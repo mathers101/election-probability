@@ -1,6 +1,6 @@
 import "./App.css";
 import Predictor from "./components/Predictor";
-import { BrowserRouter,  Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 function ElectionPage({ election }: { election: "presidential" | "senate" }) {
   // const senate = election === "senate";
