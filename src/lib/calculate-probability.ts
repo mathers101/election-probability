@@ -1,8 +1,9 @@
 // import type { StateProbabilities } from "@/data/state-probabilities";
 
 import { electoralVotes } from "@/data/electoral-votes";
-import type { StateProbabilities } from "@/data/state-probabilities";
+import type { StateProbabilities, StateProbability } from "@/data/state-probabilities";
 import type { State } from "@/data/static-state-data";
+import { senate2026Incumbents } from "@/data/senate-2026";
 // import { defaultSafeStates, safeStateResults } from "@/data/state-probabilities";
 
 export type FinalProbability = {
@@ -77,4 +78,38 @@ export const calculateProbability = (stateProbabilities: StateProbabilities): Fi
     D: harrisProbability,
     draw: drawProbability,
   };
+};
+
+/** Direct convolution for the Poisson-binomial seat-count distribution. */
+export const calculateSenateProbability = (
+  stateProbabilities: Partial<Record<State, StateProbability | null>>,
+): FinalProbability | null => {
+  const races = Object.keys(senate2026Incumbents) as State[];
+  if (races.some((state) => !stateProbabilities[state])) return null;
+
+  // The current Senate has 53 Republican and 47 Democratic caucus seats;
+  // Incumbent seats are removed from the baseline, including special seats.
+  const fixedRepublicanSeats = 53 - races.filter((state) => senate2026Incumbents[state] === "R").length;
+  let pdf = [1];
+  for (const state of races) {
+    const republicanWin = stateProbabilities[state]!.R;
+    const next = Array(pdf.length + 1).fill(0) as number[];
+    for (let seats = 0; seats < pdf.length; seats++) {
+      next[seats] += pdf[seats] * (1 - republicanWin);
+      next[seats + 1] += pdf[seats] * republicanWin;
+    }
+    pdf = next;
+  }
+
+  // Build the CDF from the convolution PDF for majority threshold queries.
+  const cdf = Array(pdf.length).fill(0) as number[];
+  for (let wins = 0; wins < pdf.length; wins++) cdf[wins] = pdf[wins] + (wins > 0 ? cdf[wins - 1] : 0);
+
+  const minimumRepublicanWins = 50 - fixedRepublicanSeats;
+  const republicanVictory = 1 - (minimumRepublicanWins > 0 ? cdf[minimumRepublicanWins - 1] : 0);
+  const maximumRepublicanWinsForDemocraticVictory = 49 - fixedRepublicanSeats;
+  const democraticVictory = maximumRepublicanWinsForDemocraticVictory < 0
+    ? 0
+    : cdf[Math.min(pdf.length - 1, maximumRepublicanWinsForDemocraticVictory)];
+  return { R: republicanVictory, D: democraticVictory, draw: 0 };
 };

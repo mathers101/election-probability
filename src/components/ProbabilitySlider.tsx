@@ -6,9 +6,18 @@ import * as Slider from "@radix-ui/react-slider";
 interface ProbabilitySliderProps {
   sliderValue: number[];
   setSliderValue: (value: number[]) => void;
+  election: "presidential" | "senate";
+  democraticCandidate?: string;
+  republicanCandidate?: string;
 }
 
-export default function ProbabilitySlider({ sliderValue: value, setSliderValue: setValue }: ProbabilitySliderProps) {
+export default function ProbabilitySlider({
+  sliderValue: value,
+  setSliderValue: setValue,
+  election,
+  democraticCandidate,
+  republicanCandidate,
+}: ProbabilitySliderProps) {
   const trumpPercent = value[0];
   const harrisPercent = 100 - trumpPercent;
   const prob = { R: trumpPercent / 100, D: harrisPercent / 100 };
@@ -40,8 +49,8 @@ export default function ProbabilitySlider({ sliderValue: value, setSliderValue: 
         </Slider.Root>
       </div>
       <div className="flex justify-between w-full text-sm">
-        <span className="text-blue-600">Harris: {harrisPercent}%</span>
-        <span className="text-red-600">Trump: {trumpPercent}%</span>
+        <span className="text-blue-600">{election === "senate" ? democraticCandidate : "Harris"}: {harrisPercent}%</span>
+        <span className="text-red-600">{election === "senate" ? republicanCandidate : "Trump"}: {trumpPercent}%</span>
       </div>
     </div>
   );

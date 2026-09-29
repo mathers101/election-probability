@@ -1,7 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import USAState from "./USAState";
 import { stateData, type State } from "../data/static-state-data";
 import type { StateProbabilities, StateProbability } from "@/data/state-probabilities";
+
+// Long enough for the zoom-out to be visible, short of the full 500ms transform.
+const ZOOM_OUT_BEFORE_NEXT_MS = 200;
+const POPOVER_AFTER_ZOOM_MS = 100;
 
 export type CustomizeConfig = {
   fill?: string;
@@ -19,6 +23,8 @@ interface USAMapProps {
   customize?: Partial<Record<State, CustomizeConfig>>;
   stateProbabilities: StateProbabilities;
   setStateProbability: (state: State, prob: StateProbability | null) => void;
+  electionStates: Set<string>;
+  election: "presidential" | "senate";
 }
 
 const USAMap = ({
@@ -30,20 +36,67 @@ const USAMap = ({
   customize = {},
   stateProbabilities,
   setStateProbability,
+  electionStates,
+  election,
 }: USAMapProps) => {
   const [selectedState, setSelectedState] = useState<State | null>(null);
+  const [openState, setOpenState] = useState<State | null>(null);
   const groupRef = useRef<SVGGElement>(null);
+  const selectedRef = useRef<State | null>(null);
+  const intendedRef = useRef<State | null>(null);
+  const timersRef = useRef<number[]>([]);
+
+  const clearTimers = () => {
+    timersRef.current.forEach((id) => window.clearTimeout(id));
+    timersRef.current = [];
+  };
+
+  useEffect(() => clearTimers, []);
 
   const fillStateColor = (state: State) => {
     return customize[state]?.fill || defaultFill;
   };
 
-  const handleStateClick = (state: State) => {
-    setSelectedState(state);
-    onClick(state);
+  const schedule = (delay: number, action: () => void) => {
+    const id = window.setTimeout(action, delay);
+    timersRef.current.push(id);
   };
 
-  const resetZoom = () => setSelectedState(null);
+  const zoomTo = (state: State) => {
+    selectedRef.current = state;
+    setSelectedState(state);
+    schedule(POPOVER_AFTER_ZOOM_MS, () => {
+      if (intendedRef.current === state) setOpenState(state);
+    });
+  };
+
+  const handleStateClick = (state: State) => {
+    clearTimers();
+    onClick(state);
+    const previous = selectedRef.current;
+    intendedRef.current = state;
+
+    if (previous && previous !== state) {
+      selectedRef.current = null;
+      setOpenState(null);
+      setSelectedState(null);
+      schedule(ZOOM_OUT_BEFORE_NEXT_MS, () => {
+        if (intendedRef.current === state) zoomTo(state);
+      });
+      return;
+    }
+
+    zoomTo(state);
+  };
+
+  const dismiss = (state?: State) => {
+    if (state && intendedRef.current && intendedRef.current !== state) return;
+    clearTimers();
+    intendedRef.current = null;
+    selectedRef.current = null;
+    setOpenState(null);
+    setSelectedState(null);
+  };
 
   // Calculate transform for zoom
   let transform = "";
@@ -65,7 +118,7 @@ const USAMap = ({
   };
 
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 959 593" onClick={resetZoom}>
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 959 593" onClick={() => dismiss()}>
       <title>{title}</title>
       <g
         className="transition-transform duration-500 ease-in-out outlines"
@@ -80,8 +133,12 @@ const USAMap = ({
             dimensions={data.dimensions ?? ""}
             state={stateKey as State}
             fill={fillStateColor(stateKey as State)}
+            isElection={electionStates.has(stateKey)}
+            isOpen={openState === stateKey}
+            election={election}
             onSelectState={() => handleStateClick(stateKey as State)}
-            onUnselectState={resetZoom}
+            onUnselectState={() => dismiss(stateKey as State)}
+            onClearSelection={() => dismiss()}
             probability={stateProbabilities[stateKey as State]}
             setProbability={setProbabilityByState(stateKey as State)}
           />
