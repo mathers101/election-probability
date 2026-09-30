@@ -1,53 +1,58 @@
 import type { State } from "./static-state-data";
+import { partyColors, type CandidateParty } from "./state-probabilities";
 
 export type SenateRace = {
   incumbent: "R" | "D" | "I" | null;
   incumbentName?: string;
   formerIncumbentName?: string;
-  democraticCandidate: string;
-  republicanCandidate: string;
+  leftCandidate: string;
+  leftCandidateParty: SenateParty;
+  rightCandidate: string;
+  rightCandidateParty: SenateParty;
   republicanProbability: number;
 };
+export type SenateParty = CandidateParty;
+export const senatePartyColors = partyColors;
 
 // 270toWin's consensus map uses qualitative ratings, so defaults translate
 // those ratings consistently: safe 95%, likely 85%, leans 75%, toss-up 50%.
 // Candidate order follows the names shown for each race on its 2026 map.
 export const senate2026Races: Partial<Record<State, SenateRace>> = {
-  AK: { incumbent: "R", incumbentName: "Dan Sullivan", democraticCandidate: "Mary Peltola", republicanCandidate: "Dan Sullivan", republicanProbability: 0.5 },
-  AL: { incumbent: "R", incumbentName: "Tommy Tuberville", democraticCandidate: "Everett Wess", republicanCandidate: "Barry Moore", republicanProbability: 0.95 },
-  AR: { incumbent: "R", incumbentName: "Tom Cotton", democraticCandidate: "Hallie Shoffner", republicanCandidate: "Tom Cotton", republicanProbability: 0.95 },
-  CO: { incumbent: "D", incumbentName: "John Hickenlooper", democraticCandidate: "John Hickenlooper", republicanCandidate: "Mark Baisley", republicanProbability: 0.05 },
-  DE: { incumbent: "D", incumbentName: "Chris Coons", democraticCandidate: "Chris Coons", republicanCandidate: "Michael Katz", republicanProbability: 0.05 },
-  FL: { incumbent: "R", incumbentName: "Ashley Moody", democraticCandidate: "Angie Nixon", republicanCandidate: "Ashley Moody", republicanProbability: 0.85 },
-  GA: { incumbent: "D", incumbentName: "Jon Ossoff", democraticCandidate: "Jon Ossoff", republicanCandidate: "Mike Collins", republicanProbability: 0.05 },
-  ID: { incumbent: "R", incumbentName: "Jim Risch", democraticCandidate: "Todd Achilles", republicanCandidate: "Jim Risch", republicanProbability: 0.95 },
-  IL: { incumbent: "D", incumbentName: "Dick Durbin", democraticCandidate: "Juliana Stratton", republicanCandidate: "Don Tracy", republicanProbability: 0.05 },
-  IA: { incumbent: "R", incumbentName: "Joni Ernst", democraticCandidate: "Josh Turek", republicanCandidate: "Ashley Hinson", republicanProbability: 0.6 },
-  KS: { incumbent: "R", incumbentName: "Roger Marshall", democraticCandidate: "Adam Hamilton", republicanCandidate: "Roger Marshall", republicanProbability: 0.7 },
-  KY: { incumbent: "R", incumbentName: "Mitch McConnell", democraticCandidate: "Charles Booker", republicanCandidate: "Andy Barr", republicanProbability: 0.95 },
-  LA: { incumbent: "R", incumbentName: "Bill Cassidy", democraticCandidate: "Jamie Davis", republicanCandidate: "Julia Letlow", republicanProbability: 0.95 },
-  ME: { incumbent: "R", incumbentName: "Susan Collins", democraticCandidate: "Troy Jackson", republicanCandidate: "Susan Collins", republicanProbability: 0.4 },
-  MA: { incumbent: "D", incumbentName: "Ed Markey", democraticCandidate: "Ed Markey", republicanCandidate: "John Deaton", republicanProbability: 0.05 },
-  MI: { incumbent: "D", incumbentName: "Gary Peters", democraticCandidate: "Abdul El-Sayed", republicanCandidate: "Mike Rogers", republicanProbability: 0.4 },
-  MN: { incumbent: "D", incumbentName: "Tina Smith", democraticCandidate: "Peggy Flanagan", republicanCandidate: "Michele Tafoya", republicanProbability: 0.1 },
-  MS: { incumbent: "R", incumbentName: "Cindy Hyde-Smith", democraticCandidate: "Scott Colom", republicanCandidate: "Cindy Hyde-Smith", republicanProbability: 0.95 },
-  MT: { incumbent: "R", incumbentName: "Steve Daines", democraticCandidate: "Alani Bankhead", republicanCandidate: "Kurt Alme", republicanProbability: 0.95 },
-  NC: { incumbent: "R", incumbentName: "Thom Tillis", democraticCandidate: "Roy Cooper", republicanCandidate: "Michael Whatley", republicanProbability: 0.1 },
-  NE: { incumbent: "R", incumbentName: "Pete Ricketts", democraticCandidate: "Dan Osborn", republicanCandidate: "Pete Ricketts", republicanProbability: 0.7 },
-  NH: { incumbent: "D", incumbentName: "Jeanne Shaheen", democraticCandidate: "Chris Pappas", republicanCandidate: "John Sununu", republicanProbability: 0.15 },
-  NJ: { incumbent: "D", incumbentName: "Cory Booker", democraticCandidate: "Cory Booker", republicanCandidate: "Justin Murphy", republicanProbability: 0.05 },
-  NM: { incumbent: "D", incumbentName: "Ben Ray Lujan", democraticCandidate: "Ben Ray Lujan", republicanCandidate: "Larry Marker", republicanProbability: 0.05 },
-  OH: { incumbent: "R", incumbentName: "Jon Husted", democraticCandidate: "Sherrod Brown", republicanCandidate: "Jon Husted", republicanProbability: 0.4 },
-  OK: { incumbent: "R", incumbentName: "Alan Armstrong", democraticCandidate: "N'Kiyla Thomas", republicanCandidate: "Kevin Hern", republicanProbability: 0.95 },
-  OR: { incumbent: "D", incumbentName: "Jeff Merkley", democraticCandidate: "Jeff Merkley", republicanCandidate: "David Smith", republicanProbability: 0.05 },
-  RI: { incumbent: "D", incumbentName: "Jack Reed", democraticCandidate: "Jack Reed", republicanCandidate: "Raymond McKay", republicanProbability: 0.05 },
-  SC: { incumbent: "R", incumbentName: "Darline Graham", democraticCandidate: "Annie Andrews", republicanCandidate: "Darline Graham", republicanProbability: 0.75 },
-  SD: { incumbent: "R", incumbentName: "Mike Rounds", democraticCandidate: "Brian Bengs", republicanCandidate: "Mike Rounds", republicanProbability: 0.95 },
-  TN: { incumbent: "R", incumbentName: "Bill Hagerty", democraticCandidate: "Marquita Bradshaw", republicanCandidate: "Bill Hagerty", republicanProbability: 0.95 },
-  TX: { incumbent: "R", incumbentName: "John Cornyn", democraticCandidate: "James Talarico", republicanCandidate: "Ken Paxton", republicanProbability: 0.5 },
-  VA: { incumbent: "D", incumbentName: "Mark Warner", democraticCandidate: "Mark Warner", republicanCandidate: "Bert Mizusawa", republicanProbability: 0.05 },
-  WV: { incumbent: "R", incumbentName: "Shelley Moore Capito", democraticCandidate: "Rachel Fetty Anderson", republicanCandidate: "Shelley Moore Capito", republicanProbability: 0.95 },
-  WY: { incumbent: "R", incumbentName: "Cynthia Lummis", democraticCandidate: "James Byrd", republicanCandidate: "Harriet Hageman", republicanProbability: 0.95 },
+  AK: { incumbent: "R", incumbentName: "Dan Sullivan", leftCandidate: "Mary Peltola", leftCandidateParty: "D", rightCandidate: "Dan Sullivan", rightCandidateParty: "R", republicanProbability: 0.5 },
+  AL: { incumbent: "R", incumbentName: "Tommy Tuberville", leftCandidate: "Everett Wess", leftCandidateParty: "D", rightCandidate: "Barry Moore", rightCandidateParty: "R", republicanProbability: 0.95 },
+  AR: { incumbent: "R", incumbentName: "Tom Cotton", leftCandidate: "Hallie Shoffner", leftCandidateParty: "D", rightCandidate: "Tom Cotton", rightCandidateParty: "R", republicanProbability: 0.95 },
+  CO: { incumbent: "D", incumbentName: "John Hickenlooper", leftCandidate: "John Hickenlooper", leftCandidateParty: "D", rightCandidate: "Mark Baisley", rightCandidateParty: "R", republicanProbability: 0.05 },
+  DE: { incumbent: "D", incumbentName: "Chris Coons", leftCandidate: "Chris Coons", leftCandidateParty: "D", rightCandidate: "Michael Katz", rightCandidateParty: "R", republicanProbability: 0.05 },
+  FL: { incumbent: "R", incumbentName: "Ashley Moody", leftCandidate: "Angie Nixon", leftCandidateParty: "D", rightCandidate: "Ashley Moody", rightCandidateParty: "R", republicanProbability: 0.85 },
+  GA: { incumbent: "D", incumbentName: "Jon Ossoff", leftCandidate: "Jon Ossoff", leftCandidateParty: "D", rightCandidate: "Mike Collins", rightCandidateParty: "R", republicanProbability: 0.05 },
+  ID: { incumbent: "R", incumbentName: "Jim Risch", leftCandidate: "Todd Achilles", leftCandidateParty: "D", rightCandidate: "Jim Risch", rightCandidateParty: "R", republicanProbability: 0.95 },
+  IL: { incumbent: "D", incumbentName: "Dick Durbin", leftCandidate: "Juliana Stratton", leftCandidateParty: "D", rightCandidate: "Don Tracy", rightCandidateParty: "R", republicanProbability: 0.05 },
+  IA: { incumbent: "R", incumbentName: "Joni Ernst", leftCandidate: "Josh Turek", leftCandidateParty: "D", rightCandidate: "Ashley Hinson", rightCandidateParty: "R", republicanProbability: 0.6 },
+  KS: { incumbent: "R", incumbentName: "Roger Marshall", leftCandidate: "Adam Hamilton", leftCandidateParty: "D", rightCandidate: "Roger Marshall", rightCandidateParty: "R", republicanProbability: 0.7 },
+  KY: { incumbent: "R", incumbentName: "Mitch McConnell", leftCandidate: "Charles Booker", leftCandidateParty: "D", rightCandidate: "Andy Barr", rightCandidateParty: "R", republicanProbability: 0.95 },
+  LA: { incumbent: "R", incumbentName: "Bill Cassidy", leftCandidate: "Jamie Davis", leftCandidateParty: "D", rightCandidate: "Julia Letlow", rightCandidateParty: "R", republicanProbability: 0.95 },
+  ME: { incumbent: "R", incumbentName: "Susan Collins", leftCandidate: "Troy Jackson", leftCandidateParty: "D", rightCandidate: "Susan Collins", rightCandidateParty: "R", republicanProbability: 0.4 },
+  MA: { incumbent: "D", incumbentName: "Ed Markey", leftCandidate: "Ed Markey", leftCandidateParty: "D", rightCandidate: "John Deaton", rightCandidateParty: "R", republicanProbability: 0.05 },
+  MI: { incumbent: "D", incumbentName: "Gary Peters", leftCandidate: "Abdul El-Sayed", leftCandidateParty: "D", rightCandidate: "Mike Rogers", rightCandidateParty: "R", republicanProbability: 0.4 },
+  MN: { incumbent: "D", incumbentName: "Tina Smith", leftCandidate: "Peggy Flanagan", leftCandidateParty: "D", rightCandidate: "Michele Tafoya", rightCandidateParty: "R", republicanProbability: 0.1 },
+  MS: { incumbent: "R", incumbentName: "Cindy Hyde-Smith", leftCandidate: "Scott Colom", leftCandidateParty: "D", rightCandidate: "Cindy Hyde-Smith", rightCandidateParty: "R", republicanProbability: 0.95 },
+  MT: { incumbent: "R", incumbentName: "Steve Daines", leftCandidate: "Alani Bankhead", leftCandidateParty: "D", rightCandidate: "Kurt Alme", rightCandidateParty: "R", republicanProbability: 0.95 },
+  NC: { incumbent: "R", incumbentName: "Thom Tillis", leftCandidate: "Roy Cooper", leftCandidateParty: "D", rightCandidate: "Michael Whatley", rightCandidateParty: "R", republicanProbability: 0.1 },
+  NE: { incumbent: "R", incumbentName: "Pete Ricketts", leftCandidate: "Dan Osborn", leftCandidateParty: "I", rightCandidate: "Pete Ricketts", rightCandidateParty: "R", republicanProbability: 0.7 },
+  NH: { incumbent: "D", incumbentName: "Jeanne Shaheen", leftCandidate: "Chris Pappas", leftCandidateParty: "D", rightCandidate: "John Sununu", rightCandidateParty: "R", republicanProbability: 0.15 },
+  NJ: { incumbent: "D", incumbentName: "Cory Booker", leftCandidate: "Cory Booker", leftCandidateParty: "D", rightCandidate: "Justin Murphy", rightCandidateParty: "R", republicanProbability: 0.05 },
+  NM: { incumbent: "D", incumbentName: "Ben Ray Lujan", leftCandidate: "Ben Ray Lujan", leftCandidateParty: "D", rightCandidate: "Larry Marker", rightCandidateParty: "R", republicanProbability: 0.05 },
+  OH: { incumbent: "R", incumbentName: "Jon Husted", leftCandidate: "Sherrod Brown", leftCandidateParty: "D", rightCandidate: "Jon Husted", rightCandidateParty: "R", republicanProbability: 0.4 },
+  OK: { incumbent: "R", incumbentName: "Alan Armstrong", leftCandidate: "N'Kiyla Thomas", leftCandidateParty: "D", rightCandidate: "Kevin Hern", rightCandidateParty: "R", republicanProbability: 0.95 },
+  OR: { incumbent: "D", incumbentName: "Jeff Merkley", leftCandidate: "Jeff Merkley", leftCandidateParty: "D", rightCandidate: "David Smith", rightCandidateParty: "R", republicanProbability: 0.05 },
+  RI: { incumbent: "D", incumbentName: "Jack Reed", leftCandidate: "Jack Reed", leftCandidateParty: "D", rightCandidate: "Raymond McKay", rightCandidateParty: "R", republicanProbability: 0.05 },
+  SC: { incumbent: "R", incumbentName: "Darline Graham", leftCandidate: "Annie Andrews", leftCandidateParty: "D", rightCandidate: "Darline Graham", rightCandidateParty: "R", republicanProbability: 0.75 },
+  SD: { incumbent: "R", incumbentName: "Mike Rounds", leftCandidate: "Brian Bengs", leftCandidateParty: "D", rightCandidate: "Mike Rounds", rightCandidateParty: "R", republicanProbability: 0.95 },
+  TN: { incumbent: "R", incumbentName: "Bill Hagerty", leftCandidate: "Marquita Bradshaw", leftCandidateParty: "D", rightCandidate: "Bill Hagerty", rightCandidateParty: "R", republicanProbability: 0.95 },
+  TX: { incumbent: "R", incumbentName: "John Cornyn", leftCandidate: "James Talarico", leftCandidateParty: "D", rightCandidate: "Ken Paxton", rightCandidateParty: "R", republicanProbability: 0.5 },
+  VA: { incumbent: "D", incumbentName: "Mark Warner", leftCandidate: "Mark Warner", leftCandidateParty: "D", rightCandidate: "Bert Mizusawa", rightCandidateParty: "R", republicanProbability: 0.05 },
+  WV: { incumbent: "R", incumbentName: "Shelley Moore Capito", leftCandidate: "Rachel Fetty Anderson", leftCandidateParty: "D", rightCandidate: "Shelley Moore Capito", rightCandidateParty: "R", republicanProbability: 0.95 },
+  WY: { incumbent: "R", incumbentName: "Cynthia Lummis", leftCandidate: "James Byrd", leftCandidateParty: "D", rightCandidate: "Harriet Hageman", rightCandidateParty: "R", republicanProbability: 0.95 },
 };
 
 export const senate2026Incumbents = Object.fromEntries(
@@ -55,5 +60,21 @@ export const senate2026Incumbents = Object.fromEntries(
 ) as Partial<Record<State, "R" | "D" | "I" | null>>;
 
 export const initialSenateProbabilities = Object.fromEntries(
-  Object.entries(senate2026Races).map(([state, race]) => [state, { R: race.republicanProbability, D: 1 - race.republicanProbability }]),
-) as Partial<Record<State, { R: number; D: number }>>;
+  Object.entries(senate2026Races).map(([state, race]) => {
+    const leftCandidate = race.leftCandidateParty === "R"
+      ? race.republicanProbability
+      : race.rightCandidateParty === "R" ? 1 - race.republicanProbability : 0.5;
+    const rightCandidate = 1 - leftCandidate;
+    return [state, {
+      leftCandidate,
+      rightCandidate,
+      leftCandidateParty: race.leftCandidateParty,
+      rightCandidateParty: race.rightCandidateParty,
+    }];
+  }),
+) as Partial<Record<State, {
+  leftCandidate: number;
+  rightCandidate: number;
+  leftCandidateParty: SenateParty;
+  rightCandidateParty: SenateParty;
+}>>;

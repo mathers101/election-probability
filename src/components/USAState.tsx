@@ -14,7 +14,7 @@ import { Button } from "./ui/button";
 import { stateData } from "@/data/static-state-data";
 import { type StateProbability } from "@/data/state-probabilities";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { senate2026Races } from "@/data/senate-2026";
+import { senate2026Races, senatePartyColors } from "@/data/senate-2026";
 
 interface BasicUSAStateProps {
   stateName: string;
@@ -49,16 +49,19 @@ const USAState = ({
   isOpen,
   election,
 }: USAStateProps) => {
-  // slider value is the probability of a Trump win
-  const initialSliderValue = (probability?.R ?? 0.5) * 100;
+  const senateRace = senate2026Races[state as keyof typeof senate2026Races];
+  // The slider value always represents the probability of the right-side candidate winning.
+  const rightCandidateProbability = probability?.rightCandidate ?? 0.5;
+  const initialSliderValue = rightCandidateProbability * 100;
   const [sliderValue, setSliderValue] = useState([initialSliderValue]);
 
   useEffect(() => {
-    if (!isOpen) setSliderValue([(probability?.R ?? 0.5) * 100]);
-  }, [isOpen, probability]);
+    if (!isOpen) {
+      setSliderValue([(probability?.rightCandidate ?? 0.5) * 100]);
+    }
+  }, [isOpen, probability, senateRace?.rightCandidateParty]);
 
   const numElectoralVotes = stateData[state]?.electoralVotes ?? 0;
-  const senateRace = senate2026Races[state as keyof typeof senate2026Races];
   const incumbentColor = senateRace?.incumbent === "R"
     ? "text-red-600"
     : senateRace?.incumbent === "D"
@@ -75,8 +78,14 @@ const USAState = ({
   };
 
   const onSave = () => {
-    // slider value is the probability of a Trump win
-    setProbability({ R: sliderValue[0] / 100, D: (100 - sliderValue[0]) / 100 });
+    const rightCandidateWin = sliderValue[0] / 100;
+    const leftCandidateWin = 1 - rightCandidateWin;
+    setProbability({
+      leftCandidate: leftCandidateWin,
+      rightCandidate: rightCandidateWin,
+      leftCandidateParty: election === "senate" ? senateRace!.leftCandidateParty : "D",
+      rightCandidateParty: election === "senate" ? senateRace!.rightCandidateParty : "R",
+    });
     onUnselectState();
   };
 
@@ -116,8 +125,11 @@ const USAState = ({
             sliderValue={sliderValue}
             setSliderValue={setSliderValue}
             election={election}
-            democraticCandidate={senateRace?.democraticCandidate}
-            republicanCandidate={senateRace?.republicanCandidate}
+            leftCandidate={senateRace?.leftCandidate}
+            leftCandidateParty={senateRace?.leftCandidateParty}
+            rightCandidate={senateRace?.rightCandidate}
+            rightCandidateParty={senateRace?.rightCandidateParty}
+            partyColors={senatePartyColors}
           />
           <div className="flex ml-auto space-x-2">
             <Button type="button" variant="outline" onClick={onClickCancel} className="hover:cursor-pointer">

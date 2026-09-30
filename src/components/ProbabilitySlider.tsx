@@ -1,26 +1,43 @@
 "use client";
 
 import { getColorFromProbability } from "@/lib/get-color-from-prob";
+import { partyColors as defaultPartyColors } from "@/data/state-probabilities";
 import * as Slider from "@radix-ui/react-slider";
+import type { SenateParty } from "@/data/senate-2026";
 
 interface ProbabilitySliderProps {
   sliderValue: number[];
   setSliderValue: (value: number[]) => void;
   election: "presidential" | "senate";
-  democraticCandidate?: string;
-  republicanCandidate?: string;
+  leftCandidate?: string;
+  leftCandidateParty?: SenateParty;
+  rightCandidate?: string;
+  rightCandidateParty?: SenateParty;
+  partyColors?: Record<SenateParty, string>;
 }
 
 export default function ProbabilitySlider({
   sliderValue: value,
   setSliderValue: setValue,
   election,
-  democraticCandidate,
-  republicanCandidate,
+  leftCandidate,
+  leftCandidateParty,
+  rightCandidate,
+  rightCandidateParty,
+  partyColors = defaultPartyColors,
 }: ProbabilitySliderProps) {
-  const trumpPercent = value[0];
-  const harrisPercent = 100 - trumpPercent;
-  const prob = { R: trumpPercent / 100, D: harrisPercent / 100 };
+  const rightPercent = value[0];
+  const leftPercent = 100 - rightPercent;
+  const leftParty = election === "senate" ? leftCandidateParty ?? "D" : "D";
+  const rightParty = election === "senate" ? rightCandidateParty ?? "R" : "R";
+  const leftColor = partyColors[leftParty];
+  const rightColor = partyColors[rightParty];
+  const thumbColor = getColorFromProbability({
+    leftCandidate: leftPercent / 100,
+    rightCandidate: rightPercent / 100,
+    leftCandidateParty: leftParty,
+    rightCandidateParty: rightParty,
+  });
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
@@ -28,7 +45,7 @@ export default function ProbabilitySlider({
         {/* Gradient Track Background */}
         <div
           className="absolute w-full rounded-full pointer-events-none inset-y-1"
-          style={{ background: "linear-gradient(to right, blue, red)" }}
+          style={{ background: `linear-gradient(to right, ${leftColor}, ${rightColor})` }}
         />
         <Slider.Root
           className="relative flex items-center w-full h-8 select-none touch-none"
@@ -43,14 +60,14 @@ export default function ProbabilitySlider({
           </Slider.Track>
           <Slider.Thumb
             className="block w-5 h-5 transition-colors border border-white rounded-full shadow cursor-pointer"
-            style={{ backgroundColor: getColorFromProbability(prob) }}
+            style={{ backgroundColor: thumbColor }}
             aria-label="Probability"
           />
         </Slider.Root>
       </div>
       <div className="flex justify-between w-full text-sm">
-        <span className="text-blue-600">{election === "senate" ? democraticCandidate : "Harris"}: {harrisPercent}%</span>
-        <span className="text-red-600">{election === "senate" ? republicanCandidate : "Trump"}: {trumpPercent}%</span>
+        <span style={{ color: election === "senate" ? leftColor : undefined }} className={election === "presidential" ? "text-blue-600" : ""}>{election === "senate" ? leftCandidate : "Harris"}: {leftPercent}%</span>
+        <span style={{ color: election === "senate" ? rightColor : undefined }} className={election === "presidential" ? "text-red-600" : ""}>{election === "senate" ? rightCandidate : "Trump"}: {rightPercent}%</span>
       </div>
     </div>
   );
