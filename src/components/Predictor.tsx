@@ -4,7 +4,8 @@ import { initialSenateProbabilities, senate2026Incumbents, senate2026Races } fro
 import USAMap, { type CustomizeConfig } from "./USAMap";
 import { type State } from "../data/static-state-data";
 import { getColorFromProbability } from "@/lib/get-color-from-prob";
-import { calculateProbability, calculateSenateProbability } from "@/lib/calculate-probability";
+import { calculateProbability, calculateSenateProbability, calculateSenateSeatPdfs } from "@/lib/calculate-probability";
+import SenateSeatDistribution from "./SenateSeatDistribution";
 import VictoryProbabilities from "./FinalProbabilities";
 import VictoryProbabilitiesPlaceholder from "./FinalProbabilitiesPlaceholder";
 import { Slider } from "./ui/slider";
@@ -60,6 +61,7 @@ export default function Predictor({ election }: { election: "presidential" | "se
   const states = Object.keys(stateProbabilities) as State[];
 
   const probability = election === "senate" ? calculateSenateProbability(senateProbabilities) : calculateProbability(presidentialProbabilities);
+  const senateSeatPdfs = election === "senate" ? calculateSenateSeatPdfs(senateProbabilities) : null;
   const electionStates = election === "senate" ? new Set(Object.keys(senate2026Incumbents)) : new Set(states);
 
   const statesFilling = (): Record<string, CustomizeConfig> => {
@@ -136,6 +138,7 @@ export default function Predictor({ election }: { election: "presidential" | "se
         senateRaces={senateRaces}
       />
        {election === "senate" && probability && <VictoryProbabilities prob={probability} election={election} />}
+       {election === "senate" && senateSeatPdfs && <SenateSeatDistribution pdfs={senateSeatPdfs} />}
     </>
   );
 }

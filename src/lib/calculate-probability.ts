@@ -12,6 +12,54 @@ export type FinalProbability = {
   draw: number;
 };
 
+export type SenateSeatPdfs = { R: number[]; D: number[]; I: number[] };
+
+/** Build seat-count PDFs (indexed by total party seats) from the race probabilities. */
+export const calculateSenateSeatPdfs = (
+  stateProbabilities: Partial<Record<State, StateProbability | null>>,
+): SenateSeatPdfs | null => {
+  const races = Object.keys(senate2026Incumbents) as State[];
+  if (races.some((state) => !stateProbabilities[state])) return null;
+
+  const fixedRepublicanSeats = 53 - races.filter((state) => senate2026Incumbents[state] === "R").length;
+  const fixedDemocraticSeats = 47 - races.filter((state) => senate2026Incumbents[state] !== "R").length;
+  const fixedIndependentSeats = 2 - races.filter((state) => senate2026Incumbents[state] === "I").length;
+  const pdfs: SenateSeatPdfs = { R: [1], D: [1], I: [1] };
+  for (const state of races) {
+    const probability = stateProbabilities[state]!;
+    const wins: Record<keyof SenateSeatPdfs, number> = {
+      R: (probability.leftCandidateParty === "R" ? probability.leftCandidate : 0) + (probability.rightCandidateParty === "R" ? probability.rightCandidate : 0),
+      D: (probability.leftCandidateParty === "D" ? probability.leftCandidate : 0) + (probability.rightCandidateParty === "D" ? probability.rightCandidate : 0),
+      I: (probability.leftCandidateParty === "I" ? probability.leftCandidate : 0) + (probability.rightCandidateParty === "I" ? probability.rightCandidate : 0),
+    };
+    for (const party of ["R", "D", "I"] as const) {
+      const pdf = pdfs[party];
+      const next = Array(pdf.length + 1).fill(0) as number[];
+      for (let seats = 0; seats < pdf.length; seats++) {
+        next[seats] += pdf[seats] * (1 - wins[party]);
+        next[seats + 1] += pdf[seats] * wins[party];
+      }
+      pdfs[party] = next;
+    }
+  }
+
+  const totalSeats: SenateSeatPdfs = {
+    R: Array(fixedRepublicanSeats).fill(0).concat(pdfs.R),
+    D: Array(fixedDemocraticSeats).fill(0).concat(pdfs.D),
+    I: Array(fixedIndependentSeats).fill(0).concat(pdfs.I),
+  };
+  return totalSeats;
+};
+
+/** Convert a discrete PDF into a cumulative distribution, preserving its seat index. */
+export const calculateCdf = (pdf: number[]): number[] => {
+  const cdf: number[] = [];
+  for (let index = 0; index < pdf.length; index++) cdf[index] = pdf[index] + (index > 0 ? cdf[index - 1] : 0);
+  return cdf;
+};
+
+export const expectedSeats = (pdf: number[]): number => pdf.reduce((sum, probability, seats) => sum + probability * seats, 0);
+
 export const calculateProbability = (stateProbabilities: StateProbabilities): FinalProbability | null => {
   const swingStates: string[] = [];
   let safeTrumpVotes = 0;
@@ -91,58 +139,12 @@ export const calculateProbability = (stateProbabilities: StateProbabilities): Fi
 export const calculateSenateProbability = (
   stateProbabilities: Partial<Record<State, StateProbability | null>>,
 ): FinalProbability | null => {
-  const races = Object.keys(senate2026Incumbents) as State[];
-  if (races.some((state) => !stateProbabilities[state])) return null;
-
-  // The current Senate has 53 Republican and 47 Democratic caucus seats;
-  // Incumbent seats are removed from the baseline, including special seats.
-  const fixedRepublicanSeats = 53 - races.filter((state) => senate2026Incumbents[state] === "R").length;
-  // The 47 non-Republican caucus seats include two Independents. Remove all
-  // non-Republican incumbents up for election so only D wins add D seats.
-  const fixedDemocraticSeats = 47 - races.filter((state) => senate2026Incumbents[state] !== "R").length;
-  let pdfR = [1];
-  let pdfD = [1];
-  let pdfI = [1];
-  for (const state of races) {
-    const probability = stateProbabilities[state]!;
-    const republicanWin = (probability.leftCandidateParty === "R" ? probability.leftCandidate : 0)
-      + (probability.rightCandidateParty === "R" ? probability.rightCandidate : 0);
-    const democraticWin = (probability.leftCandidateParty === "D" ? probability.leftCandidate : 0)
-      + (probability.rightCandidateParty === "D" ? probability.rightCandidate : 0);
-    const independentWin = (probability.leftCandidateParty === "I" ? probability.leftCandidate : 0)
-      + (probability.rightCandidateParty === "I" ? probability.rightCandidate : 0);
-    const nextR = Array(pdfR.length + 1).fill(0) as number[];
-    const nextD = Array(pdfD.length + 1).fill(0) as number[];
-    const nextI = Array(pdfI.length + 1).fill(0) as number[];
-    for (let seats = 0; seats < pdfR.length; seats++) {
-      nextR[seats] += pdfR[seats] * (1 - republicanWin);
-      nextR[seats + 1] += pdfR[seats] * republicanWin;
-    }
-    for (let seats = 0; seats < pdfD.length; seats++) {
-      nextD[seats] += pdfD[seats] * (1 - democraticWin);
-      nextD[seats + 1] += pdfD[seats] * democraticWin;
-    }
-    for (let seats = 0; seats < pdfI.length; seats++) {
-      nextI[seats] += pdfI[seats] * (1 - independentWin);
-      nextI[seats + 1] += pdfI[seats] * independentWin;
-    }
-    pdfR = nextR;
-    pdfD = nextD;
-    pdfI = nextI;
-  }
-
-  // Build the CDF from the convolution PDF for majority threshold queries.
-  const cdfR = Array(pdfR.length).fill(0) as number[];
-  const cdfD = Array(pdfD.length).fill(0) as number[];
-  const cdfI = Array(pdfI.length).fill(0) as number[];
-  for (let wins = 0; wins < pdfR.length; wins++) cdfR[wins] = pdfR[wins] + (wins > 0 ? cdfR[wins - 1] : 0);
-  for (let wins = 0; wins < pdfD.length; wins++) cdfD[wins] = pdfD[wins] + (wins > 0 ? cdfD[wins - 1] : 0);
-  for (let wins = 0; wins < pdfI.length; wins++) cdfI[wins] = pdfI[wins] + (wins > 0 ? cdfI[wins - 1] : 0);
-
-  const minimumRepublicanWins = 50 - fixedRepublicanSeats;
-  const minimumDemocraticWins = 51 - fixedDemocraticSeats;
-  const republicanVictory = 1 - (minimumRepublicanWins > 0 ? cdfR[minimumRepublicanWins - 1] : 0);
-  const democraticVictory = 1 - (minimumDemocraticWins > 0 ? cdfD[minimumDemocraticWins - 1] : 0);
+  const pdfs = calculateSenateSeatPdfs(stateProbabilities);
+  if (!pdfs) return null;
+  const cdfR = calculateCdf(pdfs.R);
+  const cdfD = calculateCdf(pdfs.D);
+  const republicanVictory = 1 - (cdfR[49] ?? 0);
+  const democraticVictory = 1 - (cdfD[50] ?? 0);
 
   return { R: republicanVictory, D: democraticVictory, draw: 0 };
 };

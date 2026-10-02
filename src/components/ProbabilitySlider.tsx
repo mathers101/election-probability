@@ -1,6 +1,6 @@
 "use client";
 
-import { getColorFromProbability } from "@/lib/get-color-from-prob";
+// import { getColorFromProbability } from "@/lib/get-color-from-prob";
 import { partyColors as defaultPartyColors } from "@/data/state-probabilities";
 import * as Slider from "@radix-ui/react-slider";
 import type { SenateParty } from "@/data/senate-2026";
@@ -32,12 +32,12 @@ export default function ProbabilitySlider({
   const rightParty = election === "senate" ? rightCandidateParty ?? "R" : "R";
   const leftColor = partyColors[leftParty];
   const rightColor = partyColors[rightParty];
-  const thumbColor = getColorFromProbability({
-    leftCandidate: leftPercent / 100,
-    rightCandidate: rightPercent / 100,
-    leftCandidateParty: leftParty,
-    rightCandidateParty: rightParty,
-  });
+  // const thumbColor = getColorFromProbability({
+  //   leftCandidate: leftPercent / 100,
+  //   rightCandidate: rightPercent / 100,
+  //   leftCandidateParty: leftParty,
+  //   rightCandidateParty: rightParty,
+  // });
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
@@ -59,8 +59,8 @@ export default function ProbabilitySlider({
             <Slider.Range className="absolute h-2 bg-transparent rounded-full" />
           </Slider.Track>
           <Slider.Thumb
-            className="block w-5 h-5 transition-colors border border-white rounded-full shadow cursor-pointer"
-            style={{ backgroundColor: thumbColor }}
+            className="block w-5 h-5 transition-colors border border-white rounded-full shadow cursor-pointer bg-transparent"
+            // style={{ backgroundColor: thumbColor }}
             aria-label="Probability"
           />
         </Slider.Root>
