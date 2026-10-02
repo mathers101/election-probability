@@ -169,8 +169,11 @@ export default function Predictor({ election }: { election: "presidential" | "se
                 <a href={senateForecastSources[senateSourceId].url} target="_blank" rel="noreferrer" className="underline hover:text-gray-900">
                   View source map
                 </a>
-                . Switching maps resets race edits.
-              </p>
+                .
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Switching maps resets any edits made to the map.
+                </p>
               <Button
                 type="button"
                 variant="outline"
@@ -185,7 +188,7 @@ export default function Predictor({ election }: { election: "presidential" | "se
 
             <div className="space-y-3 border-t border-gray-200 pt-4">
               <p className="text-xs text-muted-foreground">
-                The source maps rate states in terms of Safe, Likely, Lean and Tilt, and we convert these into probabilities.
+                Many of the source maps categorize states in terms of Safe, Likely, Lean, Tilt, and Toss-up. We convert these into probabilities for each candidate.
                 </p>
               <p className="text-xs text-muted-foreground">
                  Click{" "}

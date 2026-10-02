@@ -179,7 +179,7 @@ export const senate2026Races = (): Partial<Record<State, SenateRace>> => {
   MI: { incumbent: "D", incumbentName: "Gary Peters", leftCandidate: "Abdul El-Sayed", leftCandidateParty: "D", rightCandidate: "Mike Rogers", rightCandidateParty: "R"},
   MN: { incumbent: "D", incumbentName: "Tina Smith", leftCandidate: "Peggy Flanagan", leftCandidateParty: "D", rightCandidate: "Michele Tafoya", rightCandidateParty: "R"},
   MS: { incumbent: "R", incumbentName: "Cindy Hyde-Smith", leftCandidate: "Scott Colom", leftCandidateParty: "D", rightCandidate: "Cindy Hyde-Smith", rightCandidateParty: "R"},
-  MT: { incumbent: "R", incumbentName: "Steve Daines", leftCandidate: "Alani Bankhead", leftCandidateParty: "D", rightCandidate: "Kurt Alme", rightCandidateParty: "R"},
+  MT: { incumbent: "R", incumbentName: "Steve Daines", leftCandidate: "Seth Bodnar", leftCandidateParty: "I", rightCandidate: "Kurt Alme", rightCandidateParty: "R"},
   NC: { incumbent: "R", incumbentName: "Thom Tillis", leftCandidate: "Roy Cooper", leftCandidateParty: "D", rightCandidate: "Michael Whatley", rightCandidateParty: "R"},
   NE: { incumbent: "R", incumbentName: "Pete Ricketts", leftCandidate: "Dan Osborn", leftCandidateParty: "I", rightCandidate: "Pete Ricketts", rightCandidateParty: "R"},
   NH: { incumbent: "D", incumbentName: "Jeanne Shaheen", leftCandidate: "Chris Pappas", leftCandidateParty: "D", rightCandidate: "John Sununu", rightCandidateParty: "R"},
