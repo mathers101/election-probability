@@ -104,7 +104,7 @@ const USAState = ({
           <title>{stateName}</title>
         </path>
       </PopoverTrigger>
-      <PopoverContent side="top" className="w-md" updatePositionStrategy="always">
+      <PopoverContent side="top" className="md:w-md max-sm:w-[min(20rem,calc(100vw-2rem))] max-sm:max-w-[calc(100vw-2rem)]" updatePositionStrategy="always">
         <div className="flex flex-col px-4 w-full space-y-4">
           <div className="text-center">
             <h3 className="text-lg font-semibold">{stateName}</h3>

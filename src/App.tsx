@@ -5,7 +5,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 function ElectionPage({ election }: { election: "presidential" | "senate" }) {
   // const senate = election === "senate";
   return (
-    <div className="bg-white py-6 flex flex-col min-h-screen items-center justify-center gap-5">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-5 bg-white py-6 max-sm:justify-start max-sm:gap-4 max-sm:pt-5 max-sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))] [&>svg]:block [&>svg]:h-auto [&>svg]:w-full [&>svg]:max-w-[959px]">
       {/* <nav className="flex gap-3" aria-label="Election navigation">
         <Link className={`rounded px-4 py-2 ${!senate ? "bg-purple-700 text-white" : "bg-white text-gray-700"}`} to="/2024-presidential">2024 Presidential</Link>
         <Link className={`rounded px-4 py-2 ${senate ? "bg-purple-700 text-white" : "bg-white text-gray-700"}`} to="/2026-senate">2026 Senate</Link>
