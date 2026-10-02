@@ -24,7 +24,7 @@ export default function SenateSeatDistribution({ pdfs, cdfs }: { pdfs: SenateSea
   });
 
   return (
-    <section className="mx-auto mt-4 grid w-full min-w-0 max-w-5xl gap-4 px-3 sm:px-4 lg:grid-cols-[0.7fr_1.3fr]" aria-label="Senate seat distribution">
+    <section className="mt-4 grid w-full min-w-0 gap-4 lg:grid-cols-[0.7fr_1.3fr]" aria-label="Senate seat distribution">
       <div className="flex w-full min-w-0 flex-row gap-2 sm:gap-3 lg:flex-col lg:gap-4">
         {SERIES.map(({ key, label, color }) => (
           <Card key={key} className="min-w-0 flex-1">
@@ -111,7 +111,7 @@ export default function SenateSeatDistribution({ pdfs, cdfs }: { pdfs: SenateSea
               <Line dataKey="R" type="linear" stroke="var(--color-R)" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} /> */}
             </AreaChart>
           </ChartContainer>
-          <div className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs sm:text-sm">
+          <div className="mt-2 flex flex-wrap justify-start gap-x-4 gap-y-1 text-xs sm:text-sm">
             {SERIES.map(({ key, label, color }) => <span key={key} className="flex items-center gap-2"><span className="h-0.5 w-5" style={{ backgroundColor: color }} />{label}</span>)}
           </div>
         </CardContent>

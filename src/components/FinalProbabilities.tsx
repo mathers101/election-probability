@@ -10,7 +10,7 @@ interface ProbabilitiesProps {
 
 export default function VictoryProbabilities({ prob, election }: ProbabilitiesProps) {
   if (election === "senate") return (
-    <div className="flex flex-col gap-2 w-full max-w-5xl mx-auto mt-4 px-4">
+    <div className="flex w-full flex-col gap-2 mt-4">
       <div className="flex flex-col sm:flex-row gap-8">
       <Card className="flex-1 border-blue-500"><CardContent className="flex flex-col items-center justify-center p-4">
         <p className="text-sm text-muted-foreground">Probability of</p><p className="text-xl font-semibold text-blue-600">Democratic majority</p>
@@ -28,11 +28,10 @@ export default function VictoryProbabilities({ prob, election }: ProbabilitiesPr
         <p className="text-3xl font-bold mt-1">{((1 - prob.D - prob.R) * 100).toFixed(2)}%</p>
       </CardContent></Card>
       </div>
-      {/* <p className="w-full text-center text-xs text-muted-foreground">A 50–50 Senate counts as a Republican victory.</p> */}
     </div>
   );
   return (
-    <div className="flex flex-col sm:flex-row gap-8 w-full max-w-3xl mx-auto mt-4 px-4">
+    <div className="flex flex-col sm:flex-row gap-8 w-full max-w-3xl mt-4">
       <Card className="flex-1 border-blue-500">
         <CardContent className="flex flex-col items-center justify-center p-4">
           <p className="text-sm text-muted-foreground">Probability of</p>

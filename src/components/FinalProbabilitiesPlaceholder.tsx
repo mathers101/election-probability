@@ -2,9 +2,9 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function VictoryProbabilitiesPlaceholder({ election }: { election: "presidential" | "senate" }) {
   return (
-    <div className="w-full max-w-2xl mx-auto mt-4 px-4">
+    <div className="mt-4 w-full max-w-2xl">
       <Card>
-        <CardContent className="flex flex-col items-center justify-center p-2 text-center">
+        <CardContent className="flex flex-col items-start p-4 text-left">
           <p className="text-xl font-semibold text-muted-foreground">{election === "senate" ? "2026 Senate probabilities" : "2024 Election Probabilities"}</p>
           <p className="mt-2 text-sm text-muted-foreground max-w-lg">
             {election === "senate"
