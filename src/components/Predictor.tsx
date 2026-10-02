@@ -132,7 +132,7 @@ export default function Predictor({ election }: { election: "presidential" | "se
     <main className="mx-auto flex w-full max-w-[1500px] flex-col gap-5 px-4 py-6 text-left sm:px-6 lg:px-8">
       <section className="space-y-3" aria-labelledby="election-title">
         <h1 id="election-title" className="text-4xl font-bold text-gray-900">
-          {election === "senate" ? "2026 Senate election predictions" : "2024 presidential election predictions"}
+          {election === "senate" ? "2026 Senate Forecast" : "2024 Presidential Forecast"}
         </h1>
         {election === "senate" && (
           <div className="space-y-2 text-sm text-muted-foreground">

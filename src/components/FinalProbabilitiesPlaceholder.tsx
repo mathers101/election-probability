@@ -5,7 +5,7 @@ export default function VictoryProbabilitiesPlaceholder({ election }: { election
     <div className="mt-4 w-full max-w-2xl">
       <Card>
         <CardContent className="flex flex-col items-start p-4 text-left">
-          <p className="text-xl font-semibold text-muted-foreground">{election === "senate" ? "2026 Senate probabilities" : "2024 Election Probabilities"}</p>
+          <p className="text-xl font-semibold text-muted-foreground">{election === "senate" ? "2026 Senate Forecast" : "2024 Election Forecast"}</p>
           <p className="mt-2 text-sm text-muted-foreground max-w-lg">
             {election === "senate"
               ? "Enter a probability for each Senate race to see the chance each party wins at least 50 seats."
