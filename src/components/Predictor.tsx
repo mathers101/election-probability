@@ -101,17 +101,24 @@ export default function Predictor({ election }: { election: "presidential" | "se
             <button
               type="button"
               className="underline cursor-pointer hover:text-gray-900"
-              onClick={() => setShowSafeRaceControl(true)}
+              onClick={() => setShowSafeRaceControl((open) => !open)}
             >
               here
             </button>
-            {" "}to modify this value.
+            {showSafeRaceControl ? " to hide this control." : " to modify this value."}
           </p>
           {showSafeRaceControl && (
             <div className="mx-auto w-full max-w-md space-y-2 pt-1 text-left text-gray-900">
-              <div className="flex items-center justify-between text-sm">
-                <label htmlFor="safe-race-probability">Safe seat probability</label>
-                <span>{Math.round(safeRaceProbability * 100)}%</span>
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <label htmlFor="safe-seat-probability">Safe seat probability</label>
+                <span className="ml-auto">{Math.round(safeRaceProbability * 100)}%</span>
+                {/* <button
+                  type="button"
+                  className="underline cursor-pointer text-muted-foreground hover:text-gray-900"
+                  onClick={() => setShowSafeRaceControl(false)}
+                >
+                  Hide
+                </button> */}
               </div>
               <Slider
                 id="safe-seat-probability"

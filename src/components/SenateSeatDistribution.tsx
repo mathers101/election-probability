@@ -23,10 +23,10 @@ export default function SenateSeatDistribution({ pdfs }: { pdfs: SenateSeatPdfs 
 
   return (
     <section className="mx-auto mt-4 grid w-full max-w-5xl gap-4 px-4 lg:grid-cols-[0.7fr_1.3fr]" aria-label="Senate seat distribution">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+      <div className="flex flex-row gap-3 lg:flex-col lg:gap-4">
         {SERIES.map(({ key, label, color }) => (
-          <Card key={key}>
-            <CardContent className="p-5">
+          <Card key={key} className="min-w-0 flex-1">
+            <CardContent className="p-3 text-center sm:p-5">
               <p className="text-sm text-muted-foreground">Expected {label} seats</p>
               <p className="mt-1 text-3xl font-bold" style={{ color }}>{expectedSeats(pdfs[key]).toFixed(1)}</p>
             </CardContent>
