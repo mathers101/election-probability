@@ -65,6 +65,7 @@ const USAMap = ({
   senateRaces,
 }: USAMapProps) => {
   const [openState, setOpenState] = useState<State | null>(null);
+  const [mapZoomed, setMapZoomed] = useState(false);
   const groupRef = useRef<SVGGElement>(null);
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   const draggedMapRef = useRef(false);
@@ -143,8 +144,10 @@ const USAMap = ({
         minScale={1}
         maxScale={4}
         limitToBounds
+        panning={{ disabled: !mapZoomed }}
         pinch={{ allowPanning: true }}
         wheel={{ activationKeys: ["Control", "Meta"] }}
+        onTransform={(_, state) => { setMapZoomed(state.scale > 1); }}
         onPanningStart={(_, event) => {
           panStartRef.current = eventPoint(event);
           draggedMapRef.current = false;
