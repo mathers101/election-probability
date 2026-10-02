@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import USAState from "./USAState";
 import { stateData, type State } from "../data/static-state-data";
 import type { StateProbabilities, StateProbability } from "@/data/state-probabilities";
+import type { SenateRace } from "@/data/senate-2026";
 
 // Long enough for the zoom-out to be visible, short of the full 500ms transform.
 const ZOOM_OUT_BEFORE_NEXT_MS = 200;
@@ -25,6 +26,7 @@ interface USAMapProps {
   setStateProbability: (state: State, prob: StateProbability | null) => void;
   electionStates: Set<string>;
   election: "presidential" | "senate";
+  senateRaces: Partial<Record<State, SenateRace>>;
 }
 
 const USAMap = ({
@@ -38,6 +40,7 @@ const USAMap = ({
   setStateProbability,
   electionStates,
   election,
+  senateRaces,
 }: USAMapProps) => {
   const [selectedState, setSelectedState] = useState<State | null>(null);
   const [openState, setOpenState] = useState<State | null>(null);
@@ -141,6 +144,7 @@ const USAMap = ({
             onClearSelection={() => dismiss()}
             probability={stateProbabilities[stateKey as State]}
             setProbability={setProbabilityByState(stateKey as State)}
+            senateRace={senateRaces[stateKey as State]}
           />
         ))}
       </g>

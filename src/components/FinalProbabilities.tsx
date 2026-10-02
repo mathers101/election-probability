@@ -10,17 +10,22 @@ interface ProbabilitiesProps {
 
 export default function VictoryProbabilities({ prob, election }: ProbabilitiesProps) {
   if (election === "senate") return (
-    <div className="flex flex-col gap-2 w-full max-w-3xl mx-auto mt-4 px-4">
+    <div className="flex flex-col gap-2 w-full max-w-5xl mx-auto mt-4 px-4">
       <div className="flex flex-col sm:flex-row gap-8">
       <Card className="flex-1 border-blue-500"><CardContent className="flex flex-col items-center justify-center p-4">
         <p className="text-sm text-muted-foreground">Probability of</p><p className="text-xl font-semibold text-blue-600">Democratic majority</p>
-      <p className="w-full text-center text-xs text-muted-foreground">{"‎ "}</p>
+      <p className="w-full text-center text-xs text-muted-foreground">(51 seats or more)</p>
         <p className="text-3xl font-bold mt-1">{(prob.D * 100).toFixed(2)}%</p>
       </CardContent></Card>
       <Card className="flex-1 border-red-500"><CardContent className="flex flex-col items-center justify-center p-4">
-        <p className="text-sm text-muted-foreground">Probability of</p><p className="text-xl font-semibold text-red-600">Republican majority*</p>
-      <p className="w-full text-center text-[10px] text-muted-foreground">*a 50–50 Senate is counted as a Republican majority</p>
+        <p className="text-sm text-muted-foreground">Probability of</p><p className="text-xl font-semibold text-red-600">Republican majority</p>
+      <p className="w-full text-center text-[12px] text-muted-foreground">(50 seats or more)</p>
         <p className="text-3xl font-bold mt-1">{(prob.R * 100).toFixed(2)}%</p>
+      </CardContent></Card>
+      <Card className="flex-1 border-gray-400"><CardContent className="flex flex-col items-center justify-center p-4">
+        <p className="text-sm text-muted-foreground">Probability of</p><p className="text-xl font-semibold text-gray-600">Neither</p>
+      <p className="w-full text-center text-xs text-muted-foreground">{"\u3164"}</p>
+        <p className="text-3xl font-bold mt-1">{((1 - prob.D - prob.R) * 100).toFixed(2)}%</p>
       </CardContent></Card>
       </div>
       {/* <p className="w-full text-center text-xs text-muted-foreground">A 50–50 Senate counts as a Republican victory.</p> */}

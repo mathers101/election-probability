@@ -14,7 +14,7 @@ import { Button } from "./ui/button";
 import { stateData } from "@/data/static-state-data";
 import { type StateProbability } from "@/data/state-probabilities";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { senate2026Races, senatePartyColors } from "@/data/senate-2026";
+import { senatePartyColors, type SenateRace } from "@/data/senate-2026";
 
 interface BasicUSAStateProps {
   stateName: string;
@@ -33,6 +33,7 @@ interface USAStateProps extends BasicUSAStateProps {
   onClearSelection: () => void;
   probability: StateProbability | null;
   setProbability: (prob: StateProbability | null) => void;
+  senateRace?: SenateRace;
 }
 
 const USAState = ({
@@ -48,8 +49,8 @@ const USAState = ({
   isElection,
   isOpen,
   election,
+  senateRace,
 }: USAStateProps) => {
-  const senateRace = senate2026Races[state as keyof typeof senate2026Races];
   // The slider value always represents the probability of the right-side candidate winning.
   const rightCandidateProbability = probability?.rightCandidate ?? 0.5;
   const initialSliderValue = rightCandidateProbability * 100;
@@ -125,10 +126,10 @@ const USAState = ({
             sliderValue={sliderValue}
             setSliderValue={setSliderValue}
             election={election}
-            leftCandidate={senateRace?.leftCandidate}
-            leftCandidateParty={senateRace?.leftCandidateParty}
-            rightCandidate={senateRace?.rightCandidate}
-            rightCandidateParty={senateRace?.rightCandidateParty}
+            leftCandidate={senateRace?.leftCandidate ?? "Harris"}
+            leftCandidateParty={senateRace?.leftCandidateParty ?? "D"}
+            rightCandidate={senateRace?.rightCandidate ?? "Trump"}
+            rightCandidateParty={senateRace?.rightCandidateParty ?? "R"}
             partyColors={senatePartyColors}
           />
           <div className="flex ml-auto space-x-2">

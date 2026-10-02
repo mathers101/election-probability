@@ -9,10 +9,10 @@ interface ProbabilitySliderProps {
   sliderValue: number[];
   setSliderValue: (value: number[]) => void;
   election: "presidential" | "senate";
-  leftCandidate?: string;
-  leftCandidateParty?: SenateParty;
-  rightCandidate?: string;
-  rightCandidateParty?: SenateParty;
+  leftCandidate: string;
+  leftCandidateParty: SenateParty;
+  rightCandidate: string;
+  rightCandidateParty: SenateParty;
   partyColors?: Record<SenateParty, string>;
 }
 
@@ -26,8 +26,8 @@ export default function ProbabilitySlider({
   rightCandidateParty,
   partyColors = defaultPartyColors,
 }: ProbabilitySliderProps) {
-  const rightPercent = value[0];
-  const leftPercent = 100 - rightPercent;
+  const rightPercent = Math.round(value[0]);
+  const leftPercent = Math.round(100 - rightPercent);
   const leftParty = election === "senate" ? leftCandidateParty ?? "D" : "D";
   const rightParty = election === "senate" ? rightCandidateParty ?? "R" : "R";
   const leftColor = partyColors[leftParty];
@@ -66,8 +66,8 @@ export default function ProbabilitySlider({
         </Slider.Root>
       </div>
       <div className="flex justify-between w-full text-sm">
-        <span style={{ color: election === "senate" ? leftColor : undefined }} className={election === "presidential" ? "text-blue-600" : ""}>{election === "senate" ? leftCandidate : "Harris"}: {leftPercent}%</span>
-        <span style={{ color: election === "senate" ? rightColor : undefined }} className={election === "presidential" ? "text-red-600" : ""}>{election === "senate" ? rightCandidate : "Trump"}: {rightPercent}%</span>
+        <span style={{ color: leftColor }}>{leftCandidate}: {leftPercent}%</span>
+        <span style={{ color: rightColor }}>{rightCandidate}: {rightPercent}%</span>
       </div>
     </div>
   );

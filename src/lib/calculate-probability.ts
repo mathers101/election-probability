@@ -100,49 +100,49 @@ export const calculateSenateProbability = (
   // The 47 non-Republican caucus seats include two Independents. Remove all
   // non-Republican incumbents up for election so only D wins add D seats.
   const fixedDemocraticSeats = 47 - races.filter((state) => senate2026Incumbents[state] !== "R").length;
-  let pdf = [1];
-  let partyPdf: number[][] = [[1]];
+  let pdfR = [1];
+  let pdfD = [1];
+  let pdfI = [1];
   for (const state of races) {
     const probability = stateProbabilities[state]!;
     const republicanWin = (probability.leftCandidateParty === "R" ? probability.leftCandidate : 0)
       + (probability.rightCandidateParty === "R" ? probability.rightCandidate : 0);
-    const next = Array(pdf.length + 1).fill(0) as number[];
-    for (let seats = 0; seats < pdf.length; seats++) {
-      next[seats] += pdf[seats] * (1 - republicanWin);
-      next[seats + 1] += pdf[seats] * republicanWin;
+    const democraticWin = (probability.leftCandidateParty === "D" ? probability.leftCandidate : 0)
+      + (probability.rightCandidateParty === "D" ? probability.rightCandidate : 0);
+    const independentWin = (probability.leftCandidateParty === "I" ? probability.leftCandidate : 0)
+      + (probability.rightCandidateParty === "I" ? probability.rightCandidate : 0);
+    const nextR = Array(pdfR.length + 1).fill(0) as number[];
+    const nextD = Array(pdfD.length + 1).fill(0) as number[];
+    const nextI = Array(pdfI.length + 1).fill(0) as number[];
+    for (let seats = 0; seats < pdfR.length; seats++) {
+      nextR[seats] += pdfR[seats] * (1 - republicanWin);
+      nextR[seats + 1] += pdfR[seats] * republicanWin;
     }
-    pdf = next;
-
-    const leftWin = probability.leftCandidate;
-    const rightWin = probability.rightCandidate;
-    const leftDemSeats = probability.leftCandidateParty === "D" ? 1 : 0;
-    const rightDemSeats = probability.rightCandidateParty === "D" ? 1 : 0;
-    const leftRepSeats = probability.leftCandidateParty === "R" ? 1 : 0;
-    const rightRepSeats = probability.rightCandidateParty === "R" ? 1 : 0;
-    const nextPartyPdf = Array.from(
-      { length: partyPdf.length + Math.max(leftDemSeats, rightDemSeats) },
-      () => Array(partyPdf[0].length + Math.max(leftRepSeats, rightRepSeats)).fill(0) as number[],
-    );
-    for (let demSeats = 0; demSeats < partyPdf.length; demSeats++) {
-      for (let repSeats = 0; repSeats < partyPdf[demSeats].length; repSeats++) {
-        const mass = partyPdf[demSeats][repSeats];
-        nextPartyPdf[demSeats + leftDemSeats][repSeats + leftRepSeats] += mass * leftWin;
-        nextPartyPdf[demSeats + rightDemSeats][repSeats + rightRepSeats] += mass * rightWin;
-      }
+    for (let seats = 0; seats < pdfD.length; seats++) {
+      nextD[seats] += pdfD[seats] * (1 - democraticWin);
+      nextD[seats + 1] += pdfD[seats] * democraticWin;
     }
-    partyPdf = nextPartyPdf;
+    for (let seats = 0; seats < pdfI.length; seats++) {
+      nextI[seats] += pdfI[seats] * (1 - independentWin);
+      nextI[seats + 1] += pdfI[seats] * independentWin;
+    }
+    pdfR = nextR;
+    pdfD = nextD;
+    pdfI = nextI;
   }
 
   // Build the CDF from the convolution PDF for majority threshold queries.
-  const cdf = Array(pdf.length).fill(0) as number[];
-  for (let wins = 0; wins < pdf.length; wins++) cdf[wins] = pdf[wins] + (wins > 0 ? cdf[wins - 1] : 0);
+  const cdfR = Array(pdfR.length).fill(0) as number[];
+  const cdfD = Array(pdfD.length).fill(0) as number[];
+  const cdfI = Array(pdfI.length).fill(0) as number[];
+  for (let wins = 0; wins < pdfR.length; wins++) cdfR[wins] = pdfR[wins] + (wins > 0 ? cdfR[wins - 1] : 0);
+  for (let wins = 0; wins < pdfD.length; wins++) cdfD[wins] = pdfD[wins] + (wins > 0 ? cdfD[wins - 1] : 0);
+  for (let wins = 0; wins < pdfI.length; wins++) cdfI[wins] = pdfI[wins] + (wins > 0 ? cdfI[wins - 1] : 0);
 
   const minimumRepublicanWins = 50 - fixedRepublicanSeats;
-  const republicanVictory = 1 - (minimumRepublicanWins > 0 ? cdf[minimumRepublicanWins - 1] : 0);
-  const democraticVictory = partyPdf.reduce((total, row, democraticWins) =>
-    democraticWins + fixedDemocraticSeats >= 51
-      ? total + row.reduce((rowTotal, mass) => rowTotal + mass, 0)
-      : total,
-  0);
+  const minimumDemocraticWins = 51 - fixedDemocraticSeats;
+  const republicanVictory = 1 - (minimumRepublicanWins > 0 ? cdfR[minimumRepublicanWins - 1] : 0);
+  const democraticVictory = 1 - (minimumDemocraticWins > 0 ? cdfD[minimumDemocraticWins - 1] : 0);
+
   return { R: republicanVictory, D: democraticVictory, draw: 0 };
 };
