@@ -11,42 +11,42 @@ interface ProbabilitiesProps {
 export default function VictoryProbabilities({ prob, election }: ProbabilitiesProps) {
   if (election === "senate") return (
     <div className="flex w-full flex-col gap-2 mt-4">
-      <div className="flex flex-col sm:flex-row gap-8">
-      <Card className="flex-1 border-blue-500"><CardContent className="flex flex-col items-center justify-center p-4">
-        <p className="text-sm text-muted-foreground">Probability of</p><p className="text-xl font-semibold text-blue-600">Democratic majority</p>
-      <p className="w-full text-center text-xs text-muted-foreground">(51 seats or more)</p>
-        <p className="text-3xl font-bold mt-1">{(prob.D * 100).toFixed(2)}%</p>
+      <div className="flex w-full flex-row gap-2 sm:gap-8">
+      <Card className="min-w-0 flex-1 border-blue-500"><CardContent className="flex flex-col items-center justify-center p-2 sm:p-4">
+        <p className="text-center text-[10px] leading-tight text-muted-foreground sm:text-sm">Probability of</p><p className="text-balance text-center text-xs font-semibold leading-tight text-blue-600 sm:text-xl">Democratic majority</p>
+      <p className="w-full text-center text-[10px] leading-tight text-muted-foreground sm:text-xs">(51 seats or more)</p>
+        <p className="mt-1 text-xl font-bold sm:text-3xl">{(prob.D * 100).toFixed(2)}%</p>
       </CardContent></Card>
-      <Card className="flex-1 border-red-500"><CardContent className="flex flex-col items-center justify-center p-4">
-        <p className="text-sm text-muted-foreground">Probability of</p><p className="text-xl font-semibold text-red-600">Republican majority</p>
-      <p className="w-full text-center text-[12px] text-muted-foreground">(50 seats or more)</p>
-        <p className="text-3xl font-bold mt-1">{(prob.R * 100).toFixed(2)}%</p>
+      <Card className="min-w-0 flex-1 border-red-500"><CardContent className="flex flex-col items-center justify-center p-2 sm:p-4">
+        <p className="text-center text-[10px] leading-tight text-muted-foreground sm:text-sm">Probability of</p><p className="text-balance text-center text-xs font-semibold leading-tight text-red-600 sm:text-xl">Republican majority</p>
+      <p className="w-full text-center text-[10px] leading-tight text-muted-foreground sm:text-xs">(50 seats or more)</p>
+        <p className="mt-1 text-xl font-bold sm:text-3xl">{(prob.R * 100).toFixed(2)}%</p>
       </CardContent></Card>
-      <Card className="flex-1 border-gray-400"><CardContent className="flex flex-col items-center justify-center p-4">
-        <p className="text-sm text-muted-foreground">Probability of</p><p className="text-xl font-semibold text-gray-600">Neither</p>
-      <p className="w-full text-center text-xs text-muted-foreground">{"\u3164"}</p>
-        <p className="text-3xl font-bold mt-1">{((1 - prob.D - prob.R) * 100).toFixed(2)}%</p>
+      <Card className="min-w-0 flex-1 border-gray-400"><CardContent className="flex flex-col items-center justify-center p-2 sm:p-4">
+        <p className="text-center text-[10px] leading-tight text-muted-foreground sm:text-sm">Probability of</p><p className="text-center text-xs font-semibold leading-tight text-gray-600 sm:text-xl">Neither</p>
+      <p className="w-full text-center text-[10px] leading-tight text-muted-foreground sm:text-xs">{"\u3164"}</p>
+        <p className="mt-1 text-xl font-bold sm:text-3xl">{((1 - prob.D - prob.R) * 100).toFixed(2)}%</p>
       </CardContent></Card>
       </div>
     </div>
   );
   return (
-    <div className="flex flex-col sm:flex-row gap-8 w-full max-w-3xl mt-4">
-      <Card className="flex-1 border-blue-500">
-        <CardContent className="flex flex-col items-center justify-center p-4">
-          <p className="text-sm text-muted-foreground">Probability of</p>
-          <p className="text-xl font-semibold text-blue-600 dark:text-blue-400">Harris Victory</p>
-          <p className="text-3xl font-bold mt-1">{(prob.D * 100).toFixed(2)}%</p>
+    <div className="mt-4 flex w-full max-w-3xl flex-row gap-2 sm:gap-8">
+      <Card className="min-w-0 flex-1 border-blue-500">
+        <CardContent className="flex flex-col items-center justify-center p-2 sm:p-4">
+          <p className="text-center text-[10px] leading-tight text-muted-foreground sm:text-sm">Probability of</p>
+          <p className="text-balance text-center text-xs font-semibold leading-tight text-blue-600 sm:text-xl dark:text-blue-400">Harris Victory</p>
+          <p className="mt-1 text-xl font-bold sm:text-3xl">{(prob.D * 100).toFixed(2)}%</p>
         </CardContent>
       </Card>
-      <Card className="flex-1 border-gray-400">
-        <CardContent className="flex flex-col items-center justify-center p-4">
-          <p className="text-sm text-muted-foreground">Probability of</p>
+      <Card className="min-w-0 flex-1 border-gray-400">
+        <CardContent className="flex flex-col items-center justify-center p-2 sm:p-4">
+          <p className="text-center text-[10px] leading-tight text-muted-foreground sm:text-sm">Probability of</p>
           <div className="flex items-center gap-1">
-            <p className="text-xl font-semibold text-gray-700 dark:text-gray-300">Draw</p>
+            <p className="text-xs font-semibold leading-tight text-gray-700 sm:text-xl dark:text-gray-300">Draw</p>
             <Popover>
               <PopoverTrigger asChild>
-                <HelpCircle className="w-4 h-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 translate-y-0.75 cursor-pointer" />
+                <HelpCircle className="size-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 translate-y-0.5 cursor-pointer sm:size-4 sm:translate-y-0.75" />
               </PopoverTrigger>
               <PopoverContent side="right" className="max-w-xs text-sm">
                 A draw occurs if both candidates receive exactly 269 electoral votes each. In this case, the election is
@@ -54,14 +54,14 @@ export default function VictoryProbabilities({ prob, election }: ProbabilitiesPr
               </PopoverContent>
             </Popover>
           </div>
-          <p className="text-3xl font-bold mt-1">{(prob.draw * 100).toFixed(2)}%</p>
+          <p className="mt-1 text-xl font-bold sm:text-3xl">{(prob.draw * 100).toFixed(2)}%</p>
         </CardContent>
       </Card>
-      <Card className="flex-1 border-red-500">
-        <CardContent className="flex flex-col items-center justify-center p-4">
-          <p className="text-sm text-muted-foreground">Probability of</p>
-          <p className="text-xl font-semibold text-red-600 dark:text-red-400">Trump Victory</p>
-          <p className="text-3xl font-bold mt-1">{(prob.R * 100).toFixed(2)}%</p>
+      <Card className="min-w-0 flex-1 border-red-500">
+        <CardContent className="flex flex-col items-center justify-center p-2 sm:p-4">
+          <p className="text-center text-[10px] leading-tight text-muted-foreground sm:text-sm">Probability of</p>
+          <p className="text-balance text-center text-xs font-semibold leading-tight text-red-600 sm:text-xl dark:text-red-400">Trump Victory</p>
+          <p className="mt-1 text-xl font-bold sm:text-3xl">{(prob.R * 100).toFixed(2)}%</p>
         </CardContent>
       </Card>
     </div>
